@@ -1,0 +1,15 @@
+FROM maven:3.8.2-jdk-11 AS builder
+COPY src/ src/
+COPY .mvn/ .mvn/
+COPY pom.xml .
+COPY mvnw .
+COPY mvnw.cmd .
+RUN mvn -quiet -DskipTests package
+
+FROM openjdk:11
+COPY --from=builder target/*.jar app.jar
+COPY deploy/config.properties .
+
+EXPOSE 8080
+ENTRYPOINT ["java","-jar","app.jar"]
+#ENTRYPOINT ["tail", "-f", "/dev/null"]
