@@ -8,7 +8,7 @@ RUN mvn -quiet -DskipTests package
 
 FROM openjdk:11
 COPY --from=builder target/*.jar app.jar
-COPY deploy/config.properties .
+COPY Minecraft/ Minecraft/
 
 EXPOSE 8080
 ENTRYPOINT ["java","-jar","app.jar"]

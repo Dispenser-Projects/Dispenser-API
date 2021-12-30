@@ -1,23 +1,23 @@
-#docker-compose -p spring up -d
+#docker-compose -p block-renderer up -d
 version: "3.7"
 services:
   backend:
-    image: backend-spring
-    depends_on:
-      - database
+    image: backend-block-renderer
+#    depends_on:
+#      - database
     ports: 
       - "8080:8080"
     build:
       context: .
       dockerfile: deploy/back-dockerfile
-  database:
-    image: kaneeldias/hsqldb
-    ports: 
-      - "9001:9001"
-    environment:
-      HSQLDB_USER: sa
-      HSQLDB_PASSWORD: 123456789
-      HSQLDB_DATABASE_ALIAS: spring
+#  database:
+#    image: kaneeldias/hsqldb
+#    ports:
+#      - "9001:9001"
+#    environment:
+#      HSQLDB_USER: sa
+#      HSQLDB_PASSWORD: 123456789
+#      HSQLDB_DATABASE_ALIAS: spring
   frontend:
     image: nginx
     ports:
