@@ -1,6 +1,6 @@
 package fr.theogiraudet.tp.spring.rest;
 
-import fr.theogiraudet.tp.spring.dao.ModelDao;
+import fr.theogiraudet.tp.spring.dao.from_disk.ModelManagerDisk;
 import fr.theogiraudet.tp.spring.dto.Model;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -19,8 +19,8 @@ import java.util.List;
 @CrossOrigin
 public class ModelResource {
 
-    @Autowired
-    private ModelDao dao;
+    /*@Autowired
+    private ModelManagerDisk dao;
 
     @GetMapping(value = "/models", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Model>> getModels() {
@@ -30,6 +30,6 @@ public class ModelResource {
     @GetMapping(value = "/model/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getModel(@PathVariable("name") String name) {
         return dao.getModel(name).map(ResponseEntity.ok()::body).orElse(ResponseEntity.notFound().build());
-    }
+    }*/
 
 }
