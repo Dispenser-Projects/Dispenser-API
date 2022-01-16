@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>fr.theogiraudet</groupId>
-	<artifactId>backend-block-renderer</artifactId>
+	<artifactId>dispenser-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>tp.spring</name>
+	<name>Dispenser API</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>11</java.version>
