@@ -1,8 +1,12 @@
-#docker-compose -p block-renderer up -d
+#docker-compose -p dispenser-api up -d
 version: "3.7"
+
+volumes:
+  dispenser_data:
+
 services:
   backend:
-    image: backend-block-renderer
+    image: dispenser-api
 #    depends_on:
 #      - database
     ports: 
@@ -10,6 +14,9 @@ services:
     build:
       context: .
       dockerfile: deploy/back-dockerfile
+    volumes:
+      - dispenser_data:/dispenser_api
+
   mongo-express:
     image: mongo-express
     restart: always
@@ -19,6 +26,7 @@ services:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: root
       ME_CONFIG_MONGODB_URL: mongodb://root:root@mongo:27017/
+
   mongo:
     image: mongo
     restart: always
@@ -27,6 +35,7 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: root
+
   frontend:
     image: nginx
     ports:

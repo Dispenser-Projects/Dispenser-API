@@ -111,6 +111,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-configuration-processor</artifactId>
+			<version>2.6.2</version>
 			<optional>true</optional>
 		</dependency>
 
@@ -153,6 +154,7 @@
 						<path>
 							<groupId>org.springframework.boot</groupId>
 							<artifactId>spring-boot-configuration-processor</artifactId>
+							<version>2.6.2</version>
 						</path>
 						<path>
 							<groupId>org.projectlombok</groupId>

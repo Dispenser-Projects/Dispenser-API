@@ -7,6 +7,7 @@ import fr.theogiraudet.dispenser_api.dto.CustomPage;
 import fr.theogiraudet.dispenser_api.dto.VersionInformationDto;
 import fr.theogiraudet.dispenser_api.dto.mapper.VersionInformationMapper;
 import fr.theogiraudet.dispenser_api.dto.reduced_resource.ReducedVersion;
+import fr.theogiraudet.dispenser_api.web.rest.dummy.ReducedVersionCustomPage;
 import fr.theogiraudet.dispenser_api.web.swagger.CustomPageableAsQueryParam;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -62,7 +63,7 @@ public class VersionController {
     @Operation(summary = "Get a page of the list of all Minecraft versions", operationId = "get_all_version")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Versions found an returned",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = CustomPage.class)))
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ReducedVersionCustomPage.class)))
     })
     @GetMapping(path = "/versions", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CustomPage<ReducedVersion>> getVersions(

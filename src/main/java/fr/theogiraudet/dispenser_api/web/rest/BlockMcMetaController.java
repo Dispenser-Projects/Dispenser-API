@@ -4,6 +4,7 @@ import fr.theogiraudet.dispenser_api.domain.MinecraftAsset;
 import fr.theogiraudet.dispenser_api.dto.CustomPage;
 import fr.theogiraudet.dispenser_api.dto.reduced_resource.ReducedAsset;
 import fr.theogiraudet.dispenser_api.web.rest.abstract_resources.JsonController;
+import fr.theogiraudet.dispenser_api.web.rest.dummy.ReducedAssetCustomPage;
 import fr.theogiraudet.dispenser_api.web.swagger.CustomPageableAsQueryParam;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -38,7 +39,7 @@ public class BlockMcMetaController extends JsonController {
     @Operation(summary = "Get a page of the list of all Block Texture MCMETA files for a specified version", operationId = "get_all_block_mcmeta")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "MCMETA files found an returned",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = CustomPage.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ReducedAssetCustomPage.class))),
             @ApiResponse(responseCode = "404", description = "Specified version doesn't exist or doesn't have this resource type", content = @Content)
     })
     @GetMapping(path = "/{version}/block/mcmetas", produces = MediaType.APPLICATION_JSON_VALUE)

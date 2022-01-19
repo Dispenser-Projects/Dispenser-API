@@ -1,6 +1,7 @@
 package fr.theogiraudet.dispenser_api.dto.reduced_resource;
 
 import fr.theogiraudet.dispenser_api.web.rest.abstract_resources.AssetController;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -9,6 +10,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 /**
  * Reduced version of {@link fr.theogiraudet.dispenser_api.domain.HashedAsset} to be displayed in JSON list instead of the complete version
  */
+@Schema(name = "Reduced Asset", description = "A summarised version of the asset")
 @Data
 public class ReducedAsset {
 

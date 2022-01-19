@@ -8,6 +8,7 @@ RUN mvn -quiet package
 
 FROM openjdk:17.0.1
 COPY --from=builder target/*.jar app.jar
+COPY deploy/config.properties config.properties
 
 EXPOSE 8080
 ENTRYPOINT ["java","-jar","app.jar"]
