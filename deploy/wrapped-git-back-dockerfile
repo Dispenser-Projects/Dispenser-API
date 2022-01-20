@@ -1,4 +1,4 @@
-#docker build -t dispenser-api -f .\wrapped-back-dockerfile .
+#docker build -t dispenser-api -f .\wrapped-git-back-dockerfile .
 #docker run -dp 8080:8080 -e spring.data.mongodb.host=localhost --name dispenser-api dispenser-api
 
 FROM alpine/git:latest AS cloner
