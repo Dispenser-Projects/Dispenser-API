@@ -3,14 +3,19 @@ package fr.theogiraudet.dispenser_api.web.swagger;
 import fr.theogiraudet.dispenser_api.Utils;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.servers.Server;
 import io.swagger.v3.oas.models.tags.Tag;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
+@EnableWebMvc
 @Component
-public class SwaggerConfiguration {
+public class SwaggerConfiguration extends WebMvcConfigurationSupport {
 
     private final String description;
 
@@ -38,5 +43,13 @@ public class SwaggerConfiguration {
         if (opt.isEmpty())
             throw new NullPointerException("'description' file doesn't exist in resources");
         description = opt.get();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**");
     }
 }
