@@ -7,6 +7,6 @@
 
 FROM nginx
 WORKDIR /
-#COPY --from=builder /usr/src/app/dist/* /usr/share/nginx/html
+COPY ../docs/* /usr/share/nginx/html
 COPY deploy/nginx.conf /etc/nginx/nginx.conf
 EXPOSE 80

@@ -120,12 +120,6 @@
 			<artifactId>springdoc-openapi-data-rest</artifactId>
 			<version>1.6.4</version>
 		</dependency>
-
-		<!--<dependency>
-			<groupId>org.springdoc</groupId>
-			<artifactId>springdoc-openapi-hateoas</artifactId>
-			<version>1.6.4</version>
-		</dependency>-->
 	</dependencies>
 
 	<build>

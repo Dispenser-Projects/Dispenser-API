@@ -12,7 +12,7 @@ public class PropertiesConfiguration {
     /**
      * The Minecraft Manifest URL where get Minecraft version URL
      */
-    private String minecraftManifestUrl = "https://launchermeta.mojang.com/mc/game/version_manifest_v2.json";
+    private String manifestUrl = "https://launchermeta.mojang.com/mc/game/version_manifest_v2.json";
 
     /**
      * The temporary folder where download and extract Minecraft version jar
