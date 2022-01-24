@@ -13,11 +13,11 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Parameter(in = ParameterIn.QUERY,
         description = "Zero-based offset (0..N)",
-        name = "offset", // !
+        name = "page",
         schema = @Schema(type = "integer", defaultValue = "0"))
 @Parameter(in = ParameterIn.QUERY,
         description = "The maximum element containing in this page",
-        name = "limit", // !
+        name = "size",
         schema = @Schema(type = "integer", defaultValue = "20"))
 @Parameter(in = ParameterIn.QUERY,
         description = "Sorting criteria in the format: property(,asc|desc). "

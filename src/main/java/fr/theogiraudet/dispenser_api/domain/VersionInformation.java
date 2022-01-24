@@ -40,7 +40,7 @@ public class VersionInformation implements Comparable<VersionInformation> {
     /** The last time updated of the version */
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @JsonFormat(pattern = "uuuu-MM-dd'T'HH:m:ssXXX")
-    private OffsetDateTime time;
+    private OffsetDateTime updateTime;
 
     /** The release time of the version */
     @Field("release_time")

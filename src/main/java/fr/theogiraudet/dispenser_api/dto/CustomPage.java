@@ -3,6 +3,7 @@ package fr.theogiraudet.dispenser_api.dto;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+import fr.theogiraudet.dispenser_api.web.rest.aop_proxy.PageSortMapper;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.springframework.data.domain.Page;
@@ -40,25 +41,24 @@ public class CustomPage<T> {
     /**
      * Create a new CustomPage
      * @param count the total number of data
-     * @param limit the maximum number of data to be present in this page
-     * @param offset the offset of the page (page number)
+     * @param size the maximum number of data to be present in this page
+     * @param page the page number
      * @param sort a sort to apply to the entire data
      * @param elements the elements wrapped in this page
      * @param controller the REST Controller of the wrapped data type, to define the next and previous URL
      * @param pointTo the REST endpoint (function of the Controller) to use for build the next and previous URL
      * @param <U> the type of the Controller
      */
-    public <U> CustomPage(long count, int limit, int offset, Sort sort, List<T> elements, Class<U> controller, Function<U, Object> pointTo) {
+    public <U> CustomPage(long count, int size, int page, Sort sort, List<T> elements, Class<U> controller, Function<U, Object> pointTo) {
         this.count = count;
         this.elements = new LinkedList<>(elements);
-        if(offset + limit <= count) {
+        if((page + 1L) * size <= count) {
             next = linkTo(pointTo.apply(methodOn(controller)))
-                    .slash(toParameters(limit, offset, sort)).toUri().toString();
+                    .slash(toParameters(size, page + 1, sort)).toUri().toString();
         }
-        if(offset > 0) {
-            final var notBound = offset > limit;
+        if(page > 0) {
             previous = linkTo(pointTo.apply(methodOn(controller)))
-                    .slash(toParameters(notBound ? limit : offset, notBound ? offset - limit : 0, sort)).toUri().toString();
+                    .slash(toParameters(size, page - 1, sort)).toUri().toString();
         }
     }
 
@@ -75,15 +75,15 @@ public class CustomPage<T> {
     }
 
     /**
-     * @param limit the size limit of the CustomPage
-     * @param offset the offset (page number) of the CustomPage
+     * @param size the size of the CustomPage
+     * @param page the page number of the CustomPage
      * @param sort the sort to apply to the wrapped data
      * @return a string corresponding to HTTP parameters for this function parameters
      */
-    private String toParameters(int limit, int offset, Sort sort) {
-        final var sortString = sort.stream()
+    public String toParameters(int size, int page, Sort sort) {
+        final var sortString = (new PageSortMapper()).adapt(sort).stream()
                 .map(order -> "sort=" + order.getProperty() + ',' + order.getDirection().name().toLowerCase())
                 .collect(Collectors.joining("&"));
-        return String.format("?offset=%d&limit=%d&%s", offset, limit, sortString);
+        return String.format("?page=%d&size=%d&%s", page, size, sortString);
     }
 }

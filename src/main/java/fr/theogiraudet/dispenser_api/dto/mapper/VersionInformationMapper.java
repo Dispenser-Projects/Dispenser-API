@@ -15,7 +15,6 @@ public abstract class VersionInformationMapper {
     protected MinecraftResourceRepository repository = null;
 
     @Mapping(source = "url", target = "downloadUrl")
-    @Mapping(source = "time", target = "updateTime")
     @Mapping(source = "versionType", target = "type")
     @Mapping(target = "repository", expression = "java(this.repository)")
     public abstract VersionInformationDto versionToDto(VersionInformation information);

@@ -6,8 +6,8 @@ import fr.theogiraudet.dispenser_api.dto.CustomPage;
 import fr.theogiraudet.dispenser_api.dto.reduced_resource.ReducedAsset;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.http.ResponseEntity;
 import java.util.Map;
 
@@ -62,10 +62,14 @@ public abstract class AssetController<T> {
                         .filter(entry -> entry.getValue().contains(version))
                         .map(Map.Entry::getKey)
                         .map(res -> new ReducedAsset(res, version, this.getClass()))
-                );
-        final var page = CustomPage
-                .from(new PageImpl<>(result.toList()), getClass(), resource -> resource.getAll(null, version));
-        return ResponseEntity.ok(page);
+                ).toList();
+
+        final var page = PageableExecutionUtils
+                .getPage(result.stream().skip((long) pageable.getPageNumber() * pageable.getPageSize()).limit(pageable.getPageSize()).toList(), pageable, result::size);
+        final var customPage =
+                CustomPage
+                .from(page, getClass(), resource -> resource.getAll(null, version));
+        return ResponseEntity.ok(customPage);
     }
 
 

@@ -6,13 +6,18 @@ import fr.theogiraudet.dispenser_api.domain.MinecraftAsset;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.ArrayOperators;
+import org.springframework.data.mongodb.core.aggregation.ArrayOperators.ArrayToObject;
+import org.springframework.data.mongodb.core.aggregation.ObjectOperators;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.support.PageableExecutionUtils;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 /**
@@ -20,6 +25,7 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
  */
 @Transactional
 @Repository
+@Component
 public class MinecraftResourceRepositoryMongo implements MinecraftResourceRepository {
 
     private static final String ASSET_TYPE_FIELD = "asset_type";
@@ -39,25 +45,36 @@ public class MinecraftResourceRepositoryMongo implements MinecraftResourceReposi
 
     /**
      * @param assetType an asset type to get
-     * @param version the version from which the assets are to be retrieved
-     * @param pageable a {@link Pageable} to apply at the query
+     * @param version   the version from which the assets are to be retrieved
+     * @param pageable  a {@link Pageable} to apply at the query
      * @return a {@link Page} of {@link HashedAsset} with the specified version and asset type
      */
     @Override
     public Page<HashedAsset> getAllAssets(MinecraftAsset assetType, String version, Pageable pageable) {
-        final var query = new Query()
-                .addCriteria(where(ASSET_TYPE_FIELD).is(assetType))
-                .addCriteria(where(VERSIONS_FIELD).is(version))
-                .with(pageable);
+        final var aggregation = newAggregation(
+                addFields().addField(VERSIONED_ASSETS_FIELD)
+                        .withValueOf(ObjectOperators.valueOf(VERSIONED_ASSETS_FIELD).toArray()).build(),
+                unwind(VERSIONED_ASSETS_FIELD),
+                addFields().addField(VERSIONED_ASSETS_FIELD)
+                        .withValueOf(ArrayToObject.arrayValueOfToObject(ArrayOperators.Zip.arrayOf(List.of("$versionedAssets.k")).zip(List.of("$versionedAssets.v"))))
+                        .build(),
+                sort(pageable.getSort())
+        );
 
-        final var list = mongoTemplate.find(query, HashedAsset.class);
-        return PageableExecutionUtils.getPage(list, pageable,
-                () -> mongoTemplate.count(Query.of(query).limit(-1).skip(-1), HashedAsset.class));
+        final var result = mongoTemplate.aggregate(aggregation, HashedAsset.class, HashedAsset.class)
+                .getMappedResults()
+                .stream()
+                .filter(asset -> asset.getAssetType().equals(assetType))
+                .filter(asset -> asset.getVersionedAssets().entrySet().stream().toList().get(0).getValue().contains(version))
+                .toList();
+
+        return PageableExecutionUtils.getPage(result, pageable, result::size);
     }
+
 
     /**
      * @param assetType the type of the asset to test
-     * @param hash a hash to test
+     * @param hash      a hash to test
      * @return true if a data of the specified type exists with the specified hash, false otherwise
      */
     @Override
@@ -71,10 +88,11 @@ public class MinecraftResourceRepositoryMongo implements MinecraftResourceReposi
 
     /**
      * Add a new HashedAsset to the database
+     *
      * @param assetType the type of the asset
-     * @param version the version of the asset
-     * @param assetId the ID of the asset
-     * @param hash the hash of the asset
+     * @param version   the version of the asset
+     * @param assetId   the ID of the asset
+     * @param hash      the hash of the asset
      * @throws IllegalStateException if the asset with the same hash already exists in the database
      */
     @Override
@@ -92,10 +110,11 @@ public class MinecraftResourceRepositoryMongo implements MinecraftResourceReposi
     /**
      * Add a new version and a new ID to an existing HashedAsset
      * If the version or the ID already exist for this HashedAsset, do nothing for the existing
+     *
      * @param assetType the type of the existing asset
-     * @param hash the hash of the existing asset
-     * @param version the new version to add to the asset
-     * @param assetId the new ID to add to the asset
+     * @param hash      the hash of the existing asset
+     * @param version   the new version to add to the asset
+     * @param assetId   the new ID to add to the asset
      * @throws IllegalStateException if the asset doesn't exist
      */
     @Override
@@ -118,8 +137,8 @@ public class MinecraftResourceRepositoryMongo implements MinecraftResourceReposi
 
     /**
      * @param assetType the type of the asset to get
-     * @param version the version of the asset to get
-     * @param assetId the ID of the asset to get
+     * @param version   the version of the asset to get
+     * @param assetId   the ID of the asset to get
      * @return the HashedAsset corresponding at the 3 parameters if exists, {@link Optional#empty()} otherwise
      */
     @Override
@@ -135,7 +154,7 @@ public class MinecraftResourceRepositoryMongo implements MinecraftResourceReposi
 
     /**
      * @param assetType the type to test
-     * @param version the version to test
+     * @param version   the version to test
      * @return true if the assetType exists for the specified version, false otherwise
      */
     @Override

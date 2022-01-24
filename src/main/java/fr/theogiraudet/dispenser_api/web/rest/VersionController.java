@@ -68,7 +68,7 @@ public class VersionController {
     @GetMapping(path = "/versions", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CustomPage<ReducedVersion>> getVersions(
             @ParameterObject
-            @PageableDefault(sort = {"releaseTime"}, direction = Sort.Direction.DESC) Pageable pageable,
+            @PageableDefault(sort = {"releaseTime"}, direction = Sort.Direction.DESC, size = 20) Pageable pageable,
             @Parameter(description = "Version type to filter the list") @RequestParam(required = false) VersionType type) {
         final var example = getExample(type);
 

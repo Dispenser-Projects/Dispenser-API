@@ -15,6 +15,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,7 +46,7 @@ public class BlockModelController extends JsonController {
     })
     @GetMapping(path = "/{version}/block/models", produces = MediaType.APPLICATION_JSON_VALUE)
     @Override
-    public ResponseEntity<CustomPage<ReducedAsset>> getAll(@ParameterObject Pageable pageable,
+    public ResponseEntity<CustomPage<ReducedAsset>> getAll(@ParameterObject @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC, size = 20) Pageable pageable,
                                                            @Parameter(description = "Version from which to get the list")
                                                            @PathVariable String version) {
         return super.getAll(pageable, version);
