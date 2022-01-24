@@ -36,6 +36,26 @@ You can test the API through the Swagger documentation.
 | Langs              | Block List   |
 | Sounds             | Item List    |
 
+## Developpers
+
+### Build the project
+
+In the root folder:
+```
+mvn package
+```
+The resulting JAR is in target folder.
+
+### Deploy the project (Docker)
+
+In the root folder:
+```
+docker-compose -p dispenser-api up -d
+```
+
+Endpoint: http://localhost/api/versions  
+Swagger Documentation: http://localhost/docs
+
 ## Projects using Dispenser API
 
 - Block Renderer - [demo](https://dispenser.gunivers.net/block-renderer) - [git](https://github.com/theogiraudet/Minecraft-Block-Renderer)
