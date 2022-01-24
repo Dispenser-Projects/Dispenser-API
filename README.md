@@ -62,7 +62,7 @@ In the root folder:
 docker-compose -p dispenser-api up -d
 ```
 
-Endpoint: http://localhost/api/versions
+Endpoint: http://localhost/api/versions  
 Swagger Documentation: http://localhost/docs
 
 ## Projects using Dispenser API
