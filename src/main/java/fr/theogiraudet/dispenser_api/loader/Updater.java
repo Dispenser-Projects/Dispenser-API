@@ -1,7 +1,6 @@
 package fr.theogiraudet.dispenser_api.loader;
 
 import fr.theogiraudet.dispenser_api.domain.MinecraftAsset;
-import fr.theogiraudet.dispenser_api.domain.VersionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,9 +50,7 @@ public class Updater {
             lock = true;
             final var updated = manifest.update();
             updated.stream()
-                    .filter(x -> x.getT1().getVersionType().equals(VersionType.RELEASE))
                     .sorted((x, x2) -> x2.getT1().compareTo(x.getT1()))
-                    .filter(x -> x.getT1().getId().equals("1.0") || x.getT1().getId().equals("1.18.1"))
                     .forEach(version -> loader.loadVersion(version.getT1(), version.getT2().toArray(MinecraftAsset[]::new)));
             lock = false;
             logger.debug("Updated in {} ms", System.currentTimeMillis() - startTime);
