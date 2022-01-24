@@ -4,7 +4,7 @@ COPY .mvn/ .mvn/
 COPY pom.xml .
 COPY mvnw .
 COPY mvnw.cmd .
-RUN mvn -quiet package
+RUN mvn -quiet package -P prod
 
 FROM openjdk:17.0.1
 COPY --from=builder target/*.jar app.jar

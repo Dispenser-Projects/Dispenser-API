@@ -1,6 +1,7 @@
 package fr.theogiraudet.dispenser_api.loader;
 
 import fr.theogiraudet.dispenser_api.domain.MinecraftAsset;
+import fr.theogiraudet.dispenser_api.domain.VersionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +14,12 @@ import org.springframework.stereotype.Component;
 
 /**
  * Component downloading regularly the Minecraft Manifest to check if a new Minecraft version is released
+ * This function is only trigger in a development context
  */
 @EnableScheduling
 @Component
-@Profile("prod")
-public class Updater {
+@Profile("dev")
+public class UpdaterDev {
 
     /** The version loader to load Minecraft version from the manifest */
     private final VersionLoader manifest;
@@ -27,15 +29,15 @@ public class Updater {
     /** lock to prevent the updater from being run several times at the same time */
     private boolean lock = false;
 
-    private final Logger logger = LoggerFactory.getLogger(Updater.class);
+    private final Logger logger = LoggerFactory.getLogger(UpdaterDev.class);
 
     /**
      * Create a new Updater
      * @param manifest the version loader to load Minecraft version from the manifest
-     * @param loader   the asset loader
+     * @param loader the asset loader
      */
     @Autowired
-    public Updater(VersionLoader manifest, AssetLoader loader) {
+    public UpdaterDev(VersionLoader manifest, AssetLoader loader) {
         this.manifest = manifest;
         this.loader = loader;
     }
@@ -46,13 +48,15 @@ public class Updater {
     @Scheduled(cron = "${minecraft-data.cron-update}")
     @EventListener(ApplicationReadyEvent.class)
     public void update() {
-        if (!lock) {
+        if(!lock) {
             logger.debug("Start updating...");
             final var startTime = System.currentTimeMillis();
             lock = true;
             final var updated = manifest.update();
             updated.stream()
+                    .filter(x -> x.getT1().getVersionType().equals(VersionType.RELEASE))
                     .sorted((x, x2) -> x2.getT1().compareTo(x.getT1()))
+                    .filter(x -> x.getT1().getId().equals("1.0") || x.getT1().getId().equals("1.18.1"))
                     .forEach(version -> loader.loadVersion(version.getT1(), version.getT2().toArray(MinecraftAsset[]::new)));
             lock = false;
             logger.debug("Updated in {} ms", System.currentTimeMillis() - startTime);

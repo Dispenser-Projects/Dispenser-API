@@ -2,24 +2,59 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
+
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>2.5.4</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath/>
 	</parent>
+
+
 	<groupId>fr.theogiraudet</groupId>
 	<artifactId>dispenser-api</artifactId>
 	<version>1.0</version>
 	<name>Dispenser API</name>
 	<description>Demo project for Spring Boot</description>
+
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<spring.profiles.active>dev</spring.profiles.active>
+			</properties>
+		</profile>
+		<profile>
+			<id>prod</id>
+			<properties>
+				<spring.profiles.active>prod</spring.profiles.active>
+			</properties>
+		</profile>
+	</profiles>
+
+
 	<properties>
 		<java.version>11</java.version>
 		<org.mapstruct.version>1.4.2.Final</org.mapstruct.version>
 		<org.springdoc.version>1.5.2</org.springdoc.version>
 		<httpclient.version>5.1</httpclient.version>
 		<org.mapstruct.version>1.4.2.Final</org.mapstruct.version>
+		<spring.hateoas.version>1.4.0</spring.hateoas.version>
+		<rxjava.version>2.2.21</rxjava.version>
+		<common-io.version>2.11.0</common-io.version>
+		<json-path.version>2.6.0</json-path.version>
+		<lombok.version>1.18.22</lombok.version>
+		<jackson-datatype-jsr310.version>2.13.1</jackson-datatype-jsr310.version>
+		<zip4j.version>2.9.1</zip4j.version>
+		<spring-boot-configuration-processor.version>2.6.2</spring-boot-configuration-processor.version>
+		<springdoc-openapi-data-rest>1.6.4</springdoc-openapi-data-rest>
 	</properties>
+
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -57,44 +92,44 @@
 		<dependency>
 			<groupId>org.springframework.hateoas</groupId>
 			<artifactId>spring-hateoas</artifactId>
-			<version>1.4.0</version>
+			<version>${spring.hateoas.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>io.reactivex.rxjava2</groupId>
 			<artifactId>rxjava</artifactId>
-			<version>2.2.21</version>
+			<version>${rxjava.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-			<version>2.11.0</version>
+			<version>${common-io.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.jayway.jsonpath</groupId>
 			<artifactId>json-path</artifactId>
-			<version>2.6.0</version>
+			<version>${json-path.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.18.22</version>
+			<version>${lombok.version}</version>
 			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-jsr310</artifactId>
-			<version>2.13.1</version>
+			<version>${jackson-datatype-jsr310.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>net.lingala.zip4j</groupId>
 			<artifactId>zip4j</artifactId>
-			<version>2.9.1</version>
+			<version>${zip4j.version}</version>
 		</dependency>
 
 		<dependency>
@@ -111,14 +146,14 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-configuration-processor</artifactId>
-			<version>2.6.2</version>
+			<version>${spring-boot-configuration-processor.version}</version>
 			<optional>true</optional>
 		</dependency>
 
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-data-rest</artifactId>
-			<version>1.6.4</version>
+			<version>${springdoc-openapi-data-rest}</version>
 		</dependency>
 
 		<dependency>
@@ -141,6 +176,7 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>${project.parent.version}</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
