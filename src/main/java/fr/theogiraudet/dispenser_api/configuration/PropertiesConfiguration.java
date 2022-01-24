@@ -9,6 +9,11 @@ import org.springframework.stereotype.Component;
 @Data
 public class PropertiesConfiguration {
 
+    /***
+     * Dispenser REST API version
+     */
+    private int apiVersion = 1;
+
     /**
      * The Minecraft Manifest URL where get Minecraft version URL
      */

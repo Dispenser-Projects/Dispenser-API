@@ -17,7 +17,7 @@ public class SwaggerConfiguration extends WebMvcConfigurationSupport {
     private final String description;
 
     @Bean
-    public OpenAPI customOpenAPI(@Value("${app.version}") String appVersion) {
+    public OpenAPI customOpenAPI(@Value("${minecraft-data.api-version}") String appVersion) {
         return new OpenAPI()
                 .info(new Info()
                         .title("Minecraft Resource API")
