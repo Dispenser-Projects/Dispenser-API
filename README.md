@@ -7,8 +7,8 @@ This API is updated automatically (every hours) and work for any Minecraft versi
 
 A hosting version of the API is available [here](https://dispenser.gunivers.net/). Thanks to Gunivers for supporting and hosting this project!
 
-Current endpoint: `/api/versions` ([hosted version](https://dispenser.gunivers.net/api/versions))
-Swagger Documentation: `/api/docs` ([hosted version](https://dispenser.gunivers.net/docs))
+Current endpoint: `/api/versions` ([hosted version](https://dispenser.gunivers.net/api/versions))  
+Swagger Documentation: `/api/docs` ([hosted version](https://dispenser.gunivers.net/docs))  
 Discord to follow or/and help this project: [Gunivers' Discord](https://discord.gg/8F7cdm9bqs)
 
 You can test the API through the Swagger documentation.
@@ -62,7 +62,7 @@ In the root folder:
 docker-compose -p dispenser-api up -d
 ```
 
-Endpoint: http://localhost/api/versions
+Endpoint: http://localhost/api/versions  
 Swagger Documentation: http://localhost/docs
 
 ## Projects using Dispenser API
