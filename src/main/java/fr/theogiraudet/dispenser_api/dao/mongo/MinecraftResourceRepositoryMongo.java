@@ -6,6 +6,7 @@ import fr.theogiraudet.dispenser_api.domain.MinecraftAsset;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.AggregationOptions;
 import org.springframework.data.mongodb.core.aggregation.ArrayOperators;
 import org.springframework.data.mongodb.core.aggregation.ArrayOperators.ArrayToObject;
 import org.springframework.data.mongodb.core.aggregation.ObjectOperators;
@@ -51,6 +52,8 @@ public class MinecraftResourceRepositoryMongo implements MinecraftResourceReposi
      */
     @Override
     public Page<HashedAsset> getAllAssets(MinecraftAsset assetType, String version, Pageable pageable) {
+        final var options = AggregationOptions.builder().allowDiskUse(true).cursorBatchSize(100).build();
+
         final var aggregation = newAggregation(
                 addFields().addField(VERSIONED_ASSETS_FIELD)
                         .withValueOf(ObjectOperators.valueOf(VERSIONED_ASSETS_FIELD).toArray()).build(),
@@ -59,7 +62,7 @@ public class MinecraftResourceRepositoryMongo implements MinecraftResourceReposi
                         .withValueOf(ArrayToObject.arrayValueOfToObject(ArrayOperators.Zip.arrayOf(List.of("$versionedAssets.k")).zip(List.of("$versionedAssets.v"))))
                         .build(),
                 sort(pageable.getSort())
-        );
+        ).withOptions(options);
 
         final var result = mongoTemplate.aggregate(aggregation, HashedAsset.class, HashedAsset.class)
                 .getMappedResults()
