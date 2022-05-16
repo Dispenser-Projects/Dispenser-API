@@ -3,7 +3,7 @@ package fr.theogiraudet.dispenser_api.domain;
 import fr.theogiraudet.dispenser_api.web.rest.BlockMcMetaController;
 import fr.theogiraudet.dispenser_api.web.rest.BlockModelController;
 import fr.theogiraudet.dispenser_api.web.rest.BlockTextureController;
-import fr.theogiraudet.dispenser_api.web.rest.BlockStatesController;
+import fr.theogiraudet.dispenser_api.web.rest.BlockStateController;
 import fr.theogiraudet.dispenser_api.web.rest.abstract_resources.AssetController;
 
 import java.util.List;
@@ -25,7 +25,7 @@ public enum MinecraftAsset implements MinecraftResource {
     /** Minecraft Model Blocks */
     BLOCK_MODEL("model.block", "assets/minecraft/models/block", "json", BlockModelController.class),
 
-    BLOCK_STATES("blockstates.block", "assets/minecraft/blockstates", "json", BlockStatesController.class);
+    BLOCK_STATE("blockstate.block", "assets/minecraft/blockstates", "json", BlockStateController.class);
     
     /** The id of the asset type */
     private final String id;
@@ -87,6 +87,6 @@ public enum MinecraftAsset implements MinecraftResource {
      * @return all MinecraftAsset to load in the application
      */
     public static List<MinecraftAsset> getAll() {
-        return List.of(BLOCK_TEXTURE, BLOCK_TEXTURE_MCMETA, BLOCK_MODEL, BLOCK_STATES);
+        return List.of(BLOCK_TEXTURE, BLOCK_TEXTURE_MCMETA, BLOCK_MODEL, BLOCK_STATE);
     }
 }

@@ -24,23 +24,23 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * REST Controller for Blockstates files
+ * REST Controller for Blockstate files
  */
 @RestController
-@Tag(name = "Blockstates")
-public class BlockStatesController extends JsonController {
+@Tag(name = "Blockstate")
+public class BlockStateController extends JsonController {
 
     /**
      * Create a new Minecraft Blockstates Controller
      */
-    protected BlockStatesController() {
-        super(MinecraftAsset.BLOCK_STATES);
+    protected BlockStateController() {
+        super(MinecraftAsset.BLOCK_STATE);
     }
 
     @CustomPageableAsQueryParam
-    @Operation(summary = "Get a page of the list of all Blockstates files for a specified version", operationId = "get_all_blockstates")
+    @Operation(summary = "Get a page of the list of all Blockstate files for a specified version", operationId = "get_all_blockstate")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Blockstates files found an returned",
+            @ApiResponse(responseCode = "200", description = "Blockstate files found an returned",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ReducedAssetCustomPage.class))),
             @ApiResponse(responseCode = "404", description = "Specified version doesn't exist or doesn't have this resource type", content = @Content)
     })
@@ -52,17 +52,17 @@ public class BlockStatesController extends JsonController {
         return super.getAll(pageable, version);
     }
 
-    @Operation(summary = "Get a specific Blockstates file for a specified version", operationId = "get_block_blockstates")
+    @Operation(summary = "Get a specific Blockstate file for a specified version", operationId = "get_block_blockstate")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Blockstates file found an returned",
+            @ApiResponse(responseCode = "200", description = "Blockstate file found an returned",
                     content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404", description = "Specified version doesn't exist or doesn't have this resource", content = @Content)
     })
-    @GetMapping(path = "/{version}/block/blockstates/{assetName}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/{version}/block/blockstate/{assetName}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Override
     public ResponseEntity<String> getAsset(
-            @Parameter(description = "Blockstates file name to get") @PathVariable String assetName,
-            @Parameter(description = "Version from which to get the blockstates") @PathVariable String version) {
+            @Parameter(description = "Blockstate file name to get") @PathVariable String assetName,
+            @Parameter(description = "Version from which to get the blockstate") @PathVariable String version) {
         return super.getAsset(assetName, version);
     }
 }
