@@ -25,7 +25,9 @@ public enum MinecraftAsset implements MinecraftResource {
     /** Minecraft Model Blocks */
     BLOCK_MODEL("model.block", "assets/minecraft/models/block", "json", BlockModelController.class),
 
-    BLOCK_STATE("blockstate.block", "assets/minecraft/blockstates", "json", BlockStateController.class);
+    BLOCK_STATE("blockstate.block", "assets/minecraft/blockstates", "json", BlockStateController.class),
+
+    BLOCK_TILESET("tileset.block",null,"png",BlockTilesetController.class);
     
     /** The id of the asset type */
     private final String id;

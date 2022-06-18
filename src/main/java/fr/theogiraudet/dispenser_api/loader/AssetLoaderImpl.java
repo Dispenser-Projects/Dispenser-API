@@ -2,6 +2,7 @@ package fr.theogiraudet.dispenser_api.loader;
 
 import fr.theogiraudet.dispenser_api.dao.MinecraftResourceRepository;
 import fr.theogiraudet.dispenser_api.dao.MinecraftVersionRepository;
+import fr.theogiraudet.dispenser_api.domain.HashedAsset;
 import fr.theogiraudet.dispenser_api.domain.MinecraftAsset;
 import fr.theogiraudet.dispenser_api.domain.VersionInformation;
 import net.lingala.zip4j.ZipFile;
@@ -11,17 +12,25 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.stream.Collectors;
+
+import java.awt.Graphics2D;
+import java.awt.Color;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
 
 /**
  * An implementation of {@link AssetLoader} to load hashed assets in a database
@@ -79,7 +88,121 @@ public class AssetLoaderImpl implements AssetLoader {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        generateTileset(infos);
         logger.debug("{} loaded in {} ms", infos.getId(), System.currentTimeMillis() - startingTime);
+    }
+
+     /**
+     * Generate tileset assets from specified version
+     * @param infos the {@link VersionInformation} from which to extract the assets
+     */
+    private void generateTileset(VersionInformation infos) { 
+        String[] sort = {"versionedAssets"}; 
+
+        // Get all textures
+        Page<HashedAsset> textures = repository.getAllAssets(MinecraftAsset.BLOCK_TEXTURE, infos.getId(), PageRequest.of(1, 20).withSort(Direction.ASC,sort));
+        final int numberofTextures = textures.getNumberOfElements();
+        if(textures.getNumberOfElements() <= 0) {
+            return;
+        }
+
+        // Compute image value
+        final double initialWidth = Math.sqrt(numberofTextures);
+        final int width = upperPowerOfTwo((int)initialWidth);
+        final int pixelWidth = width * 16;
+
+        // Create image
+        BufferedImage image = new BufferedImage(pixelWidth, pixelWidth, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D graphics2D = image.createGraphics();
+
+
+        // Draw invalid texture
+        graphics2D.setPaint(Color.BLACK);
+        graphics2D.fillRect(0, 0, 16, 16);
+
+        graphics2D.setPaint(Color.MAGENTA);
+        graphics2D.fillRect(0,0,8,8);
+        graphics2D.fillRect(8,8,8,8);
+
+
+        TilesetBlockPosition.addVersion(infos.getId());
+
+        // Invalid texture is already on image
+        int index = 1;
+        for (var texture : textures.getContent()) {
+            BufferedImage input;
+            try { 
+
+                // Get the file path and read the texture
+                String fileHash = texture.getId();
+                String assetsId = texture.getAssetType().getId();
+                String extension = texture.getAssetType().getExtension();
+                input = ImageIO.read(new File(dataPath+File.separatorChar+assetsId+File.separatorChar+fileHash+"."+extension));
+
+                // Compute position value
+                final int u  = (index % width);
+                final int v = (int)Math.floor(index/width);
+                final int x = 16 * u;
+                final int y = 16 * v;
+
+                // Save block position
+                int[] position = {x,y,x+16,y+16};
+                String blockName = (String) texture.getVersionedAssets().keySet().toArray()[0];
+                TilesetBlockPosition.addPosition(infos.getId(), blockName, position);
+
+                // Draw texture
+                graphics2D.drawImage(input, x, y, x+16,y+16, 0, 0, 16, 16, null);
+                index++;
+
+            } catch(Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        // Export image as byte array stream
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        try{
+            ImageIO.write(image, "PNG", outputStream);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        // Add to db
+        try {
+            final String hash =  DigestUtils.md5Hex(outputStream.toByteArray());
+            if (repository.hashExists(MinecraftAsset.BLOCK_TILESET, hash))
+                repository.addToExistingHash(MinecraftAsset.BLOCK_TILESET, hash, infos.getId(), "tileset");
+            else {
+                repository.addNewAssetHash(MinecraftAsset.BLOCK_TILESET, infos.getId(), "tileset", hash);
+                String assetsId = MinecraftAsset.BLOCK_TILESET.getId();
+                String extension = MinecraftAsset.BLOCK_TILESET.getExtension();
+
+                String outPath = dataPath + File.separatorChar + assetsId + File.separatorChar + hash + "." + extension;
+                // Export image as file
+                File file = new File(outPath);
+                try(OutputStream fileOutputStream = FileUtils.openOutputStream(file)) {
+                    outputStream.writeTo(fileOutputStream);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Compute the upper power of two 
+     * @param number a number
+     * @return upper power of two
+     */
+    public static int upperPowerOfTwo(int number) {
+        number--;
+        number |= number >>> 1;
+        number |= number >>> 2;
+        number |= number >>> 4;
+        number |= number >>> 8;
+        number |= number >>> 16;
+        number++;
+        return number;
     }
 
     /**
