@@ -4,6 +4,7 @@ import fr.theogiraudet.dispenser_api.web.rest.BlockMcMetaController;
 import fr.theogiraudet.dispenser_api.web.rest.BlockModelController;
 import fr.theogiraudet.dispenser_api.web.rest.BlockTextureController;
 import fr.theogiraudet.dispenser_api.web.rest.BlockStateController;
+import fr.theogiraudet.dispenser_api.web.rest.BlockTilesetController;
 import fr.theogiraudet.dispenser_api.web.rest.abstract_resources.AssetController;
 
 import java.util.List;
