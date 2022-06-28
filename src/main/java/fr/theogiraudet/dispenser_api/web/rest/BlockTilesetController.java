@@ -71,7 +71,7 @@ public class BlockTilesetController extends AssetController<InputStreamResource>
         return getAsset("tileset", version, MediaType.IMAGE_PNG);
     }
 
-    @Operation(summary = "Get Block Tileset position for a specified version", operationId = "get_block_tileset_position")
+    @Operation(summary = "Get Block Tileset position (in pixel) for a specified version", operationId = "get_block_tileset_position")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Block Tileset position found an returned",
                     content = @Content(mediaType = "application/json")),
