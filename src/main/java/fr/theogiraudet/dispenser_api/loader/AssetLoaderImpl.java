@@ -164,6 +164,7 @@ public class AssetLoaderImpl implements AssetLoader {
         // Export image as byte array stream
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try{
+            ImageIO.setUseCache(false);
             ImageIO.write(image, "PNG", outputStream);
         } catch(Exception e) {
             e.printStackTrace();
