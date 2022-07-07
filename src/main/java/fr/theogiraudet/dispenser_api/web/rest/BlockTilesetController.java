@@ -17,12 +17,14 @@ import java.io.FileNotFoundException;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
+@CrossOrigin
 @Tag(name = "Block Tileset")
 public class BlockTilesetController extends AssetController<InputStreamResource> {
 
